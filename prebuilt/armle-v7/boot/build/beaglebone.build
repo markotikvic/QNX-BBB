@@ -1,0 +1,537 @@
+#####################################################################################
+##
+## QNX Neutrino 6.6.0 on the Texas Instruments BeagleBone or Beaglebone Black Board
+##
+#####################################################################################
+##
+## SUPPORTED DEVICES:
+##
+## SERIAL:   OMAP UART
+##
+##  - For detailed instructions on the default example configuration for
+##    these devices see the "CONFIGURING ON-BOARD SUPPORTED HARDWARE"
+##    section below the build script section, or refer to the BSP docs.
+##  - Tip: Each sub-section which relates to a particular device is marked
+##         with its tag (ex. SERIAL). You can use the search features of
+##         your editor to quickly find and add or remove support for
+##         these devices.
+##  - For details on how build files work, please refer to the help
+##    documentation for "mkifs" in the QNX Neutrino "Utilities Reference".
+## 
+###########################################################################
+##
+## NOTES:
+##
+###########################################################################
+
+###########################################################################
+## START OF BUILD SCRIPT
+###########################################################################
+
+[image=0x81000000]
+[+compress]
+[virtual=armle-v7,raw] .bootstrap = {
+    
+    #######################################################################
+    ## Startup arguments
+    ## Use "-d" to enable watchdog timer support
+    ##          please run "dm814x-wdtkick" with this option
+    #######################################################################
+    startup-ti-am335x-beaglebone
+
+    #######################################################################
+    ## PATH set here is the *safe* path for executables.
+    ## LD_LIBRARY_PATH set here is the *safe* path for libraries.
+    ##     i.e. These are the paths searched by setuid/setgid binaries.
+    ##          (confstr(_CS_PATH...) and confstr(_CS_LIBPATH...))
+    #######################################################################
+    PATH=:/proc/boot:/bin:/usr/bin LD_LIBRARY_PATH=:/proc/boot:/lib:/usr/lib:/lib/dll procnto-instr -v
+}
+[+script] .script = {
+    # Initialise the console
+    procmgr_symlink ../../proc/boot/libc.so.3 /usr/lib/ldqnx.so.2
+
+    display_msg Welcome to QNX Neutrino 6.6.0 on the Texas Instruments AM335x BeagleBone (ARMv7 Cortex-A8 core) - DefBuild
+
+    # Start some common servers
+    slogger
+    pipe
+
+    #######################################################################
+    ## SERIAL driver
+    #######################################################################
+    devc-seromap -e -F -b115200 -c48000000/16 0x44E09000^2,72
+    #devc-seromap -e -F -b115200 -c48000000/16 0x49020000^2,74
+    waitfor /dev/ser1 4
+    reopen /dev/ser1
+ 
+    #######################################################################
+    ## MMC/SD driver
+    #######################################################################
+    display_msg Starting MMC/SD driver...
+    # MMC 0 pio
+    #devb-mmcsd-jacinto5 cam blk automount=hd0t12:/fs/sd0 mmcsd verbose=3,pio,ioport=0x48060100,irq=64,ioport=0x49000000,dma=24,dma=25
+    # MMC 0 dma
+    #devb-mmcsd-jacinto5 cam blk automount=hd0t12:/fs/sd0 mmcsd verbose=3,ioport=0x48060100,irq=64,ioport=0x49000000,dma=24,dma=25
+
+    # uncomment to mount the eMMC device on the Beaglebone Black board
+    devb-mmcsd-jacinto5 cam blk automount=hd1t12:/fs/sd1 mmcsd verbose=3,ioport=0x481d8100,irq=28,ioport=0x49000000,dma=2,dma=3
+
+    #######################################################################
+    ## I2C driver
+    #######################################################################
+    display_msg starting I2C driver...
+    # Uncomment for /dev/i2c0
+    i2c-omap35xx-j5 -i 70 -p0x44E0B000 --u0
+    waitfor /dev/i2c0
+
+    # Uncomment for /dev/i2c1 – pin mux'ing must also be set up in init_pinmux.c
+    # i2c-omap35xx-j5 -i 71 -p0x4802A000 --u1
+    # waitfor /dev/i2c1
+
+    # Uncomment for /dev/i2c2 – pin mux'ing must also be set up in init_pinmux.c
+    # i2c-omap35xx-j5 -i 30 -p0x4819C000 --u2
+    # waitfor /dev/i2c2
+
+    #######################################################################
+    ## Watchdog timer
+    #  -k    Kick time interval in milliseconds. (Default: 15000 ms)
+    #  -t    Timeout Period of watchdog timer in milliseconds. (Default: 2x the kicktime)
+    #######################################################################
+    display_msg starting WDT reset utility...
+    dm814x-wdtkick -a 0x44E35000 -t 15000 -l64
+
+    #######################################################################
+    ## Board id driver
+    #######################################################################
+    display_msg starting Board ID driver...
+    ## Uncomment for board id
+    am335x-boardid &
+    waitfor /dev/bdid 1
+
+    #######################################################################
+    ## RTC driver (TPS65910) utility
+    ##  - It requires I2C driver
+    #######################################################################
+    display_msg Setting OS Clock from on-board RTC
+    rtc -b 0x44e3e000 dm816x
+    date
+    
+    #######################################################################
+    ## USB OTG Host Controller driver
+    #######################################################################
+    display_msg Starting USB OTG Host driver...
+    io-usb -vvv -d dm816x-mg ioport=0x47401c00,irq=19
+    waitfor /dev/io-usb/io-usb 4
+    devb-umass cam pnp
+
+    #######################################################################
+    ## SPI driver
+    ## SPI 0 ioport 0x48030100 irq 65
+    ## SPI 1 ioport 0x481a0100 irq 125
+    #######################################################################
+    display_msg Starting SPI driver...
+    #  SPI0
+    #spi-master -d dm816x base=0x48030100,irq=65,edma=1,edmairq=529,edmachannel=17
+    #  SPI1
+    spi-master -d dm816x base=0x481A0100,irq=125,edma=1,edmairq=555,edmachannel=43
+
+    #######################################################################
+    ## Network driver
+    #######################################################################
+    display_msg Starting network driver...
+    io-pkt-v4-hc -d dm814x-am335x deviceindex=0,p0mode=gmii
+    waitfor /dev/socket
+    dhcp.client -i dm0
+
+
+    #######################################################################
+    ## USB OTG port (operating in device mode)...
+    ## The commands below will configure the i.MX6 OTG port as a Mass Storage Device
+    #######################################################################
+   
+    ###### Example of CDC-ACM (serial) device #####
+
+    # Step 1 - Start USB device stack
+    io-usb-dcd -dusbser-am335x-musbmhdrc ioport=0x47401400,irq=18,nodma,force_device_mode,inherit_cfg
+    waitfor /dev/io-usb-dcd/io-usb 4
+    waitfor /dev/io-usb-dcd/devu-usbser-am335x-musbmhdrc.so 4
+
+    # Step 2 - Start USB CDC-ACM function driver and enable USB soft connect
+    devc-serusb_dcd -e -v -F -s -d iface_list=0,unit=1
+    waitfor /dev/serusb1
+    ulink_ctrl -l 1
+
+    ##### Example of Mass Storage device #####
+    # Step 1 - Create a ram disk
+    #devb-ram ram capacity=16384,nodinit,cache=512k disk name=hd@10
+    #waitfor /dev/hd10
+    #fdisk /dev/hd10 add -t 6
+    #mount -e /dev/hd10
+    #waitfor /dev/hd10t6
+    #mkdosfs /dev/hd10t6
+
+    # Step 2 - Start device stack
+    #io-usb-dcd -dusbumass-am335x-musbmhdrc ioport=0x47401400,irq=18,nodma,force_device_mode,inherit_cfg
+    #waitfor /dev/io-usb-dcd/io-usb 4
+    #waitfor /dev/io-usb-dcd/devu-usbumass-am335x-musbmhdrc.so 4
+       
+    # Step 3 - Start Mass Storage function driver and enable USB soft connect
+    #devu-umass_client-block -l lun=0,devno=1,iface=0,fname=/dev/hd10
+    #ulink_ctrl -l 1
+
+    ##### Example of NCM device (Ethernet over USB) #####
+    # Step 1 - Start USB device stack
+    #io-usb-dcd -dusbncm-am335x-musbmhdrc ioport=0x47401400,irq=18,nodma,force_device_mode,inherit_cfg
+    #waitfor /dev/io-usb-dcd/io-usb 4
+    #waitfor /dev/io-usb-dcd/devu-usbncm-am335x-musbmhdrc.so 4
+
+    # Step 2 - Start USB NCM function driver
+    # For best performance attach the usbdnet driver to an existing io-pkt stack. Alternatively multiple
+    # io-pkt stacks can be used (see SDP documentation for more details). 
+    #mount -Tio-pkt -o mac=123456789abc,protocol=ncm devnp-usbdnet.so
+    #ulink_ctrl -l1
+
+    # Step 3 - Assign IP address to ncm interface using DHCP OR any static IP.
+    #if_up -p ncm0
+    
+    #ifconfig ncm0 192.168.10.100
+    # OR
+    #dhcp.client -i ncm0 -A0 &
+    
+    
+
+    #######################################################################
+    ## REMOTE_DEBUG (gdb or Momentics)
+    ##  - refer to the help documentation for the gdb, qconn and the IDE
+    ##    for more information on remote debugging
+    ##  - the commands shown require that NETWORK is enabled too
+    #######################################################################
+    #devc-pty
+    #waitfor /dev/ptyp0 4
+    #waitfor /dev/socket 4
+    #qconn port=8000
+
+    #######################################################################
+    ## Leds driver
+    #######################################################################
+    display_msg starting leds driver...
+    am335x-leds &
+    waitfor /dev/leds 4
+    
+    #######################################################################
+    ## INETD daemon
+    #######################################################################
+    #display_msg Starting inetd daemon
+    #inetd
+
+    [+session] sh /proc/boot/.console.sh &
+}
+
+
+# Redirect console messages
+[type=link] /bin/sh=/proc/boot/ksh
+[type=link] /dev/console=/dev/ser1
+[type=link] /tmp=/dev/shmem
+[type=link] /var/log=/tmp
+[type=link] /usr/tmp=/tmp
+
+# Shared libraries:
+# Programs require the runtime linker (ldqnx.so) to be at a fixed location
+
+libc.so
+libm.so
+
+###########################################################################
+## uncomment for BLOCK device 
+###########################################################################
+libcam.so
+io-blk.so
+cam-disk.so
+cam-cdrom.so
+fs-qnx6.so
+fs-qnx4.so
+fs-dos.so
+fs-udf.so
+fs-cd.so
+
+###########################################################################
+## uncomment for USB Host controller driver
+###########################################################################
+devu-dm816x-mg.so
+libusbdi.so
+
+###########################################################################
+## uncomment for USB Device Controller drivers
+###########################################################################
+devu-usbumass-am335x-musbmhdrc.so
+devu-usbser-am335x-musbmhdrc.so
+devu-usbncm-am335x-musbmhdrc.so
+libusbdci.so
+
+###########################################################################
+## uncomment for USB Function drivers
+###########################################################################
+devnp-usbdnet.so
+
+###########################################################################
+## uncomment for SPI driver
+###########################################################################
+spi-dm816x.so
+
+###########################################################################
+## uncomment for NETWORKING
+###########################################################################
+devnp-dm814x-am335x.so
+libsocket.so
+
+###########################################################################
+## uncomment for rcheck and mudflap support
+###########################################################################
+#librcheck.so
+#libmudflap.so.0
+#libmudflapth.so.0
+
+###########################################################################
+## uncomment for REMOTE_DEBUG (gdb or Momentics)
+###########################################################################
+libtracelog.so.1
+
+
+###########################################################################
+## Graphics support - Screen
+###########################################################################
+libhiddi.so.1
+
+/usr/lib/libdisputil.so.2=libdisputil.so.2
+/usr/lib/libWFD.so.1=libWFD.so.1
+/usr/lib/libinputevents.so.1=libinputevents.so.1
+/usr/lib/libkalman.so.1=libkalman.so.1
+/lib/dll/screen-pvr2d.so=screen-pvr2d.so
+/lib/dll/screen-gles2.so=screen-gles2.so
+/usr/lib/graphics/am335x/libsrv_um.so=graphics/am335x/libsrv_um.so
+/usr/lib/graphics/am335x/libpvr2d.so=graphics/am335x/libpvr2d.so
+/usr/lib/graphics/am335x/pvrsrvinit.so=graphics/am335x/pvrsrvinit.so
+/usr/lib/graphics/am335x/pvrsrv.so=graphics/am335x/pvrsrv.so
+
+/usr/lib/graphics/am335x/libWFDam335x-bbb.so=graphics/am335x/libWFDam335x-bbb.so
+/usr/lib/graphics/am335x/libwfdcfg-am335x-bbb.so=graphics/am335x/libwfdcfg-am335x-bbb.so
+/usr/lib/graphics/am335x/graphics.conf=graphics/am335x/graphics.conf.bbb
+#[search=../install/armle-v7/usr/lib/graphics/am335x] /usr/lib/graphics/am335x/graphics.conf.bbb=graphics.conf
+#[search=../install/armle-v7/usr/lib/graphics/am335x] /usr/lib/graphics/am335x/libwfdcfg-am335x-bbb.so=libwfdcfg-am335x-bbb.so
+
+/usr/lib/libEGL.so.1=libEGL.so.1
+/usr/lib/libscreen.so.1=libscreen.so.1
+/usr/lib/libGLESv1_CM.so.1=libGLESv1_CM.so.1
+/usr/lib/libGLESv2.so.1=libGLESv2.so.1
+/usr/lib/graphics/am335x/libusc.so=graphics/am335x/libusc.so
+/usr/lib/graphics/am335x/libIMGegl.so=graphics/am335x/libIMGegl.so
+/usr/lib/graphics/am335x/wsegl-screen.so=graphics/am335x/wsegl-screen.so
+/usr/lib/graphics/am335x/libImgGLESv1_CM.so=graphics/am335x/libImgGLESv1_CM.so
+/usr/lib/graphics/am335x/libImgGLESv2.so=graphics/am335x/libImgGLESv2.so
+/usr/lib/graphics/am335x/libglslcompiler.so=graphics/am335x/libglslcompiler.so
+
+###########################################################################
+## Audio support
+###########################################################################
+libasound.so.2
+libaudio_manager.so.1
+libpps.so.1
+deva-ctrl-mcasp-dm814x_tda19988.so
+
+###########################################################################
+## Cacheflags settings
+###########################################################################
+[search=../install/etc/system/config] /etc/system/config/cacheflags.conf=cacheflags.conf
+
+
+#[data=copy]
+
+# Executables
+[data=c]
+
+###########################################################################
+## Set environment and start the main shell
+###########################################################################
+[perms=0744] .console.sh={
+
+   # These environment variables are inherited by all the programs that follow.
+   echo Setting environment variables...
+   export SYSNAME=nto
+   export TERM=qansi
+   export HOME=/
+   export PATH=:/proc/boot:/bin:/usr/bin:/opt/bin:/sbin
+   export LD_LIBRARY_PATH=:/proc/boot:/lib:/usr/lib:/lib/dll:/opt/lib
+   export GRAPHICS_ROOT=/usr/lib/graphics/am335x
+   echo done.
+
+   #######################################################################
+   ## Start the screen graphics
+   #######################################################################
+   echo Starting Screen Graphics...
+   screen
+   waitfor /dev/screen/0/dpy-1
+   # We have to sleep to ensure the HDMI Bridge is configured before io-audio
+   # is started. There is currently nothing we can do a waitfor on for this
+   # operation.
+   sleep 1
+   echo done.
+
+   #######################################################################
+   ## HDMI Audio driver
+   ## NOTE: The HDMI Audio driver requires Screen to be running first!!
+   #######################################################################
+   echo Starting HDMI Audio driver...
+   io-audio -d mcasp-dm814x_tda19988
+   waitfor /dev/snd/pcmC0D1p
+
+   ksh -l
+}
+
+###########################################################################
+## Screen
+###########################################################################
+/sbin/screen=screen
+/usr/bin/gles1-gears=gles1-gears
+/usr/bin/gles2-gears=gles2-gears
+/usr/bin/sw-vsync=sw-vsync
+
+###########################################################################
+## Audio driver
+###########################################################################
+io-audio
+wave
+mix_ctl
+
+#######################################################################
+## SERIAL driver
+#######################################################################
+devc-seromap
+/bin/stty=stty
+
+###########################################################################
+## uncomment for SD driver
+###########################################################################
+devb-mmcsd-jacinto5
+
+#######################################################################
+## I2C driver
+#######################################################################
+i2c-omap35xx-j5
+
+###########################################################################
+## Board ID
+###########################################################################
+am335x-boardid
+
+###########################################################################
+## RTC
+###########################################################################
+rtc
+date
+
+###########################################################################
+## uncomment for SPI driver
+###########################################################################
+spi-master
+
+###########################################################################
+## uncomment for LED driver
+###########################################################################
+am335x-leds
+
+###########################################################################
+## uncomment for USB driver
+###########################################################################
+io-usb
+usb
+devb-umass
+devb-ram
+
+###########################################################################
+## uncomment for USB HOST Device stack and utils
+###########################################################################
+io-usb-dcd
+ulink_ctrl
+
+###########################################################################
+## uncomment for USB Function drivers
+###########################################################################
+devu-umass_client-block
+devc-serusb_dcd
+
+###########################################################################
+## uncomment for NETWORKING
+###########################################################################
+io-pkt-v4-hc
+ifconfig
+if_up
+nicinfo
+netstat
+ping
+route
+setkey
+dhcp.client
+
+###########################################################################
+## uncomment for WATCHDOG TIMER utility
+###########################################################################
+dm814x-wdtkick
+
+###########################################################################
+## uncomment for REMOTE_DEBUG (gdb or Momentics)
+###########################################################################
+devc-pty
+qconn
+/usr/bin/pdebug=pdebug
+
+###########################################################################
+## uncomment for required network clients and services
+###########################################################################
+fs-cifs
+fs-nfs3
+ftp
+inetd
+/usr/sbin/telnetd=telnetd
+/usr/sbin/ftpd=ftpd
+/bin/login=login
+
+
+###########################################################################
+## general commands
+###########################################################################
+cat
+ls
+ksh
+mount
+pipe
+pidin
+uname
+shutdown
+sleep
+slogger
+sloginfo
+slay
+umount
+mkdir
+rmdir
+mv
+cp
+rm
+on
+elvis
+df
+ln
+chmod
+more
+hostname
+use
+kill
+fdisk
+mkdosfs
+waitfor
+
+
+###########################################################################
+## END OF BUILD SCRIPT
+###########################################################################

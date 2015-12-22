@@ -1,0 +1,8 @@
+STATE=Experimental
+INSTALLDIR=armle-v7/boot/sys/
+INSTALLNAME=startup-ti-am335x-beaglebone
+NAME=startup-ti-am335x-beaglebone
+USER=marko
+HOST=lmint
+DATE=2015/12/21-11:12:12-CET
+DESCRIPTION=TI AM335x Cortex-A8 startup

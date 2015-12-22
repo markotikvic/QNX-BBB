@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<module name="i2c-omap35xx">
+	<type>Element</type>
+	<classification>Driver</classification>
+
+	<description>
+		<short>OMAP3530 I2C Driver</short>
+			<abstract>
+				<![CDATA[This Multi-master fast mode capable interface is supported in the TI OMAP3530 BSP.]]>
+			</abstract>
+	</description>
+
+	<supports>
+		<availability>
+			<cpu isa="arm">
+			<byteOrder>le</byteOrder>
+			<byteOrder>le.v7</byteOrder>
+			</cpu>
+		</availability>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+	<GroupOwner>hw</GroupOwner>
+
+	<contents>
+		<package isInternal="true">
+			<component id="omap35xx" generated="true">
+				<location basedir="{cpu}/{endian}"
+					runtime="true">i2c-omap35xx</location>
+			</component>
+			<component id="omap35xx-omap4" generated="true">
+				<location basedir="{cpu}/omap4/{endian}"
+					runtime="true">i2c-omap35xx-omap4</location>
+			</component>
+			<component id="omap35xx-j5" generated="true">
+				<location basedir="{cpu}/j5/{endian}"
+					runtime="true">i2c-omap35xx-j5</location>
+			</component>
+		</package>
+	</contents>
+
+	<requires>
+		<part build="false" location="lib/i2c"/>
+	</requires>
+
+</module>

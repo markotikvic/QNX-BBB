@@ -1,0 +1,17 @@
+<!-- Unless otherwise specified, values/attributes are free-form strings -->
+    <!-- type is currently either BSP or SourceOnly -->
+<sourcePackage type="BSP" id="ti-am335x-beaglebone-SDP6.6">
+    <title>QNX Neutrino 6.6 BSP for the Texas Instruments AM335x Beaglebone / Beaglebone Black Platform</title>
+    <release>latest</release>
+    <maturity>Development Build</maturity>
+    <license>QDL and Apache II</license>
+    <startup>startup-ti-am335x-beaglebone</startup>
+    <description>This package contains the source and build files for targeting QNX/Neutrino on the TI AM335x BeagleBone</description>
+    <vendor>QNX Software Systems</vendor>
+    <qnxTargetVersion>SDP6.6</qnxTargetVersion>
+   	<qnxTargetCPU variant="armle.v7">ARM</qnxTargetCPU>
+    <!-- type is currently only import, will be extended in the future. -->
+    <bsp type="import">
+		<import>src/hardware/startup/boards/ti-am335x/beaglebone/build</import>
+    </bsp>
+</sourcePackage>

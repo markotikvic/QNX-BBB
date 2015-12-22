@@ -1,0 +1,57 @@
+%C - Sound driver for the McASP interface  
+
+This is a DLL of the io-audio system.
+
+options:
+i2c_addr        : slave address of first i2c device
+clk_mode        : "master" or "slave"
+mcasp           : 0 - 5 (default = 0)
+i2c_dev         : i2c device to connect to (0 for i2c0, 2 for i2c2)
+tx_voices       : Tx channels (per McASP serializer)
+rx_voices       : Rx channels
+xprotocol       : "tdm_i2s" | "tdm_lj" | "tdm_pcm" | "spdif" - i2s, left justified, PCM, or SPDIF
+rprotocol       : "tdm_i2s" | "tdm_lj" | "tdm_pcm" - i2s, left justified, PCM
+sample_size     : 16 or 32
+ahxclk          : High frequency xclk - "input|output"[:clk_freq1:clk_freq2: ...]
+ahrclk          : High frequency rclk - "input|output"[:clk_freq1:clk_freq2: ...]
+mclk            : Main clock (in Hz)
+sample_rate     : Sample rate for TX and RX (in Hz) or range - min_rate:max_rate
+xrate           : TX sample rate (in Hz) or range - min_rate:max_rate
+rrate           : RX sample rate (in Hz) or range - min_rate:max_rate
+tx_serializer   : value[:value] Internal serializer assigned for playback
+rx_serializer   : value[:value] Internal serializer assigned for capture
+async_clks      : TX and RX clks are asynchronous (1 = aync, 0 = sync)
+fs_active_width : Width of active period of fs - "bit" or "word"
+slot_size       : TDM Slot Size (only 16 or 32 is supported)
+slot_num        : TDM Slot number
+capture_subchn  : value[:value] Concurrently supported capture streams (default 1)
+dma_fragsize    : DMA transfer size used for multi-subchn capture (default 1K)
+xclk_pol        : TX clock polarity (0 - falling edge, 1 - rising edge)
+                  (i2s = 0, lj = 0, pcm = 1, spdif - n/a)
+rclk_pol        : RX clock polarity (0 - falling edge, 1 - rising edge)
+                  (i2s = 1, lj = 1, pcm = 0, spdif - n/a)
+xfsync_pol      : TX Frame sync polarity (0 - Active low, 1 - Active high)
+                  (i2s = 0, lj = 1, pcm = 1, spdif - n/a)
+rfsync_pol      : RX Frame sync polarity (0 - Active low, 1 - Active high)
+                  (i2s = 0, lj = 1, pcm = 1, spdif - n/a)
+xbit_delay      : TX bit delay ( 0-bit, 1-bit, 2-bit)
+                  (i2s = 1, lj = 0, pcm = 0, spdif - n/a)
+rbit_delay      : RX bit delay ( 0-bit, 1-bit, 2-bit)
+                  (i2s = 1, lj = 0, pcm = 0, spdif - n/a)
+loopback        : Enable Digital Loopback
+
+Note: When multiple rx serializers are specififed, each serializer will be
+      represented as a separate capture device.
+
+Note: The protocol options initialize the clock polarity and bit delays values.
+      These values can be explicitly overriden with the discreet polarity
+      and bit delay options.
+
+Example:
+# For McASP2
+io-audio -vvvv -d mcasp-j5_aic3106 mcasp=2
+
+# Slave mode, ahxclk = output @ 24576000Hz
+io-audio -d mcasp-dm814x clk_mode=slave,ahxclk=output:24576000
+
+NOTE: For Gen1,RevB of J5 EVK, mclk=24576000Hz

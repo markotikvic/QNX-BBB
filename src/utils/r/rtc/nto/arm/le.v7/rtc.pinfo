@@ -1,0 +1,8 @@
+STATE=Experimental
+INSTALLDIR=armle-v7/sbin/
+INSTALLNAME=rtc
+NAME=rtc
+USER=marko
+HOST=lmint
+DATE=2015/12/01-11:14:00-CET
+DESCRIPTION=Set or get date from realtime clock

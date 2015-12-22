@@ -1,0 +1,56 @@
+/*
+ * $QNXLicenseC:
+ * Copyright 2009, QNX Software Systems.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"). You
+ * may not reproduce, modify or distribute this software except in
+ * compliance with the License. You may obtain a copy of the License
+ * at: http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OF ANY KIND, either express or implied.
+ *
+ * This file may contain contributions from others, either as
+ * contributors under the License or as licensors under other terms.
+ * Please review this entire file for other proprietary rights or license
+ * notices, as well as the QNX Development Suite License Guide at
+ * http://licensing.qnx.com/license-guide/ for other information.
+ * $
+ */
+
+%C Driver for DM816x SPI controllers
+
+Syntax:
+    spi-master -d dm816x [option[,option ...]] ... &
+
+Options (to override autodetected defaults):
+
+  base            Base address for this CSPI controller
+  bitrate         Defines the bitrate to the specific spi device - [device_id:bitrate]
+  clock           Defines the value of the clock source of the SPI, default reference clock:48MHz
+  channel         Defines the connected channel number (1,2,3, or 4)
+  irq             IRQ for this CSPI intereface
+  force           Force the default CSx level
+  num_cs          Number of support devices on this channel (default=1)
+  edma            Disable/enable SDMA for SPI, 1:enable SDMA, 0:disable SDMA (default)
+  cs_delay        Select clock cycles 0:0.5, 1:1.5, 2:2.5, 3:3.5 default is 0
+  edmabase        Base address for EDMA controller, default 0x49000000
+  edmairq         IRQ of SPI receive EDMA channel
+  edmachannel     EDMA channel for SPI receiver
+  somi            Determine which pin use for somi: 0 for D0, 1 for D1
+  cspol           Select CS polarity as active high
+  prio            Sigev priority from 1 to 255 or -1 (SIGEV_PULSE_PRIO_INHERIT), default is 21
+  fifo            FIFO control. 0:disable FIFO  1:enable RxFIFO 2:enable TxFIFO 3:enable both
+  clk_ratio       Clock Ratio Granularity. 0:power-of-two, 1:one-lock-cycle
+  clk_clkd        Frequency divider for SPI_SCLK (0-0xF, default is 0)
+  clk_extclk      Clock ratio extension, used to concatenate with CLKD when clk_ratio=1 (0-0xFF, default is 0)
+  clk_activity    Clocks activity during wake-up mode period(0-3, default is 0)
+  pwr             Power management (0-2, default is 2)
+  ocp             Internal OCP Clock gating strategy(0-1, default is 1)
+  pin             PIN34: pin mode selection.  0:use(default), 1:not-use
+
+Examples:
+    # Start McSPI driver with base address, IRQ, waitstates and sigev priority....
+    spi-master -u0 -d dm816x base=0x48030100,irq=65,somi=0,edma=1,edmairq=529,edmachannel=17,prio=10
+    spi-master -u1 -d dm816x base=0x481a0100,irq=125,somi=1,edma=1,edmairq=555,edmachannel=43,prio=255

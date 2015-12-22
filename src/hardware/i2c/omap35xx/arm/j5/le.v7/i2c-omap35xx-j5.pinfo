@@ -1,0 +1,8 @@
+STATE=Experimental
+INSTALLDIR=armle-v7/sbin/
+INSTALLNAME=i2c-omap35xx-j5
+NAME=i2c-omap35xx-j5
+USER=marko
+HOST=lmint
+DATE=2015/12/21-11:12:12-CET
+DESCRIPTION=OMAP35xx I2C Driver

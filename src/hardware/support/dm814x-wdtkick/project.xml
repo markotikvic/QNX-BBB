@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<module name="dm814x-wdtkick">
+  <classification>Driver</classification>
+  <description>
+    <short>Watchdog Timer Module</short>
+    <abstract><![CDATA[
+            The dm814x-wdtkick is the Watchdog Timer Module for TI DM814x processor
+        ]]></abstract>
+  </description>
+  <supports>
+    <availability>
+      <cpu isa="arm">
+        <byteOrder>le</byteOrder>
+        <byteOrder>le.v7</byteOrder>
+      </cpu>
+    </availability>
+  </supports>
+  <contents>
+    <component id="dm814x-wdtkick" generated="true">
+      <location basedir="arm/le">dm814x-wdtkick</location>
+      <location basedir="arm/le.v7">dm814x-wdtkick</location>
+    </component>
+  </contents>
+  <requires>
+    <part build="true" location="lib/drvr"/>
+  </requires>
+</module>

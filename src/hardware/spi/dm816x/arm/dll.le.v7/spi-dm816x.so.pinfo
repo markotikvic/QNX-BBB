@@ -1,0 +1,8 @@
+STATE=Experimental
+INSTALLDIR=armle-v7/lib/dll/
+INSTALLNAME=spi-dm816x.so
+NAME=spi-dm816x.so
+USER=marko
+HOST=lmint
+DATE=2015/12/01-11:13:45-CET
+DESCRIPTION=DM816x SPI driver

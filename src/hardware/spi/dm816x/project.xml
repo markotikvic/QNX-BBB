@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<module name="spi-dm816x">
+  <classification>Driver</classification>
+  <description>
+    <short>DM816x SPI Driver</short>
+    <abstract><![CDATA[
+		The Serial Protocol Interface on the DM816x is protocol compatible 
+with the standard Serial Protocol Interface (SPI). The DM816x BSP 
+support for the SPI (spi-dm816x) supports Full Duplex communication in 
+Master mode. The SPI provides serial communications between the DM816x 
+CPU core and peripheral devices.
+	        ]]></abstract>
+  </description>
+  <supports>
+    <availability>
+      <cpu isa="arm">
+        <byteOrder>le</byteOrder>
+      </cpu>
+    </availability>
+  </supports>
+  <contents>
+    <component id="spi-dm816x" generated="true">
+      <location basedir="arm/dll.le">spi-dm816x.so</location>
+    </component>
+  </contents>
+  <requires>
+    <part build="true" location="lib/spi"/>
+    <part build="false" location="hardware/spi"/>
+  </requires>
+</module>

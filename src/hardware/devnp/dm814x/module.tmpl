@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<module name="devnp-driver">
+    <type>Element</type>
+    <classification>Driver</classification>
+
+        <description>
+            <short>Driver for TI OMAP35XX MEAC controllers</short>
+            <abstract>
+                <![CDATA[The devnp-driver.so driver controls Ethernet Media Access Controller compatible Ethernet adapters.]]>
+            </abstract>
+        </description>
+
+    <supports>
+        <availability>
+            <cpu isa="arm">
+                <byteOrder>le</byteOrder>
+            </cpu>
+        </availability>
+    </supports>
+
+    <source available="false">
+        <location type="">.</location>
+    </source>
+
+    <GroupOwner>net</GroupOwner>
+
+    <contents>
+        <package isInternal="true">
+        <component id="driver" generated="true">
+            <location basedir="{cpu}/dll{.:endian}"
+                runtime="true">devnp-driver.so</location>
+        </component>
+        </package>
+    </contents>
+
+    <requires>
+        <part build="true" location="lib/io-pkt/sys/lib/libnetdrvr"/>
+    </requires>
+
+</module>

@@ -1,0 +1,8 @@
+STATE=Experimental
+INSTALLDIR=armle-v7/sbin/
+INSTALLNAME=spi-master
+NAME=spi-master
+USER=marko
+HOST=lmint
+DATE=2015/12/01-11:13:45-CET
+DESCRIPTION = SPI Driver

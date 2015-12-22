@@ -1,0 +1,21 @@
+%C - LEDs driver for Beaglebone board
+
+%C 
+
+No options. The driver can be used using the 'write' function, by writing
+a string that holds the leds value. For example:
+
+    fh = open("/dev/leds", 0);
+    write(fh, "1", 1);       // sets leds to binary 0001
+    write(fh, "7", 1);       // sets leds to binary 0111
+
+Hexadecimal can be used as well:
+
+    write(fh, "0xF", 3);     // sets leds to binary 1111
+
+The driver can also be used in scripts and in a terminal window:
+
+    echo 1 > /dev/leds       // sets leds to binary 0001
+    echo 7 > /dev/leds       // sets leds to binary 0111
+    echo 0xF > /dev/leds     // sets leds to binary 1111
+

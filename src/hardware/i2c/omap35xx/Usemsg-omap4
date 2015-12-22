@@ -1,0 +1,22 @@
+OMAP4 and OMAP5 I2C manager
+
+%C [options]
+
+Options:
+-a addr     Own address (default: 1)
+-p addr     I2C base address (default: 0x48070000)
+-P prio     priority of interrupt event pulse
+-i irq      I2C interrupt (default: 56)
+-s slave    Slave address (default: 0x49)
+-v          verbose
+-f          don't treat ROVR and XUDF as errors
+-h value    optional value to add to SCCH to adjust high clock period (value is in NS) (default=0)
+-l value    optional value to add to SCCL to adjust low clock period (value is in NS) (default=0)
+-c value    optional value representing the SoC version (default=omap4: 0, omap5-ES1.0: 1, omap5-ES2.0: 2, J6/J6ECO: 3)
+-e          optional, disable power management. this option requires that the
+            module's clocks have already been enabled. failure to have that will cause a SIGBUS when
+            accessing the module's registers.
+
+Example invocation for OMAP5 simulator(no power management support):
+            i2c-omap35xx-omap4 -p 0x48070000 -i 88 -c 1 -e --u0
+

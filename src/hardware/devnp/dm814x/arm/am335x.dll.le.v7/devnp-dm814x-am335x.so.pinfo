@@ -1,0 +1,8 @@
+STATE=Experimental
+INSTALLDIR=armle-v7/lib/dll/
+INSTALLNAME=devnp-dm814x-am335x.so
+NAME=devnp-dm814x-am335x.so
+USER=marko
+HOST=lmint
+DATE=2015/12/01-11:13:44-CET
+DESCRIPTION=dm814x ethernet driver

@@ -1,0 +1,29 @@
+%C Driver for AM335x USB perihperal controller.
+
+Featuring descriptors for a NCM device.
+
+Syntax:
+    io-usb-dcd -dusbncm-am335x-musbmhdrc [options]
+
+Options:
+    ioport=<addr>       register base address
+    irq=<num>           interrupt request number
+    forcefs             force controller into full speed
+    verbose=<int>       set verbosity level to <int>
+    ser=<string>        override serial string descriptor
+    nodma               force PIO mode
+    linkup              Assert "SOFT CONNECT".  Enables the target to be detected
+                        as soon as the device controller driver is loaded
+    linkdown            De-assert "SOFT-CONNECT".  The link must be manually
+                        enabled once the entire USB subsystem is ready. (default)
+    inherit_cfg         Do not power down PHY, gate USB clocks when driver exits
+    force_device_mode   Ignore "ID" pin and force USB Controller to operate in Device Mode.
+    edma                Use EDMA other than the default CPPI DMA
+    edmachannel         The first EDMA channel available for this driver (default 0)
+    edmairq             The IRQ number corresponds to 'edmachannel'. (default 512)
+
+Examples:
+
+    io-usb-dcd  -dusbncm-am335x-musbmhdrc ioport=0x47401400,irq=18,nodma,verbose=5
+    io-usb-dcd  -dusbncm-am335x-musbmhdrc ioport=0x47401400,irq=18,edma
+    io-usb-dcd  -dusbncm-am335x-musbmhdrc ioport=0x47401400,irq=18,edma,edmachannel=32

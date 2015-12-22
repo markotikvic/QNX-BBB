@@ -1,0 +1,38 @@
+%C MMCSD Driver.
+
+Syntax:
+devb-mmcsd-<variant> [cam cam_options][mmcsd mmcsd_options...][blk io-blk_options...] &
+
+Options:  All options are separated by commas.
+
+cam options:
+    quiet       Be quiet: don't display any information on startup.
+    verbose     Be verbose: display full information about units (devices)
+                on startup.
+
+mmcsd  options:
+    ioport=addr Specify the base address of MMCSD controller(1st ioport)
+                and EDMA (2nd ioport)
+    edma=chnum  Specify the EDMA channel for transmit (1st edma)
+                and receive (2nd edma)
+    pio         Uses PIO mode for read/write.
+    clock       Operation clock
+    bw          Bus width
+    bs          Board specific options.
+                Usage bs=nocd:retry=num:svoltage=volts
+                <nocd> Specify if target board does not support card detect
+                <retry=num> Number of power down/up retries during startup
+                <svoltage=volts> Specify SD/eMMC card support voltage. 0: 1.8V, 1: 3.0V, 2: 3.3V, default is all three voltages.
+                <cen=0/1> Specify clock is enabled or disabled. 0: disable, 1: enable, default is 1
+                <dto=counter> Specify data time out counter value. counter = 0x00 ~ 0x0E, default is 0x0E.
+                <cdr=0/1>  Interval time to recover CD, default is 0, range is 0-20. Polling interval is the unit. Be used when card is being inserted, but no device in /dev/.
+    noac12      Disable hardware auto command 12
+    nohs        Disable high speed support
+    maxsg       Maximum SG number if SGDMA is supported
+    normv       Raw device entry alway exists (default none)
+    slot        specify the slot name
+    cmdlog=num  specify log level of logging command send
+                to the card, default is level 0, which will
+                disable command logging.
+    priority=num Specify the priority of internal events.
+    The mmcsd options control the drivers interface to MMCSD.

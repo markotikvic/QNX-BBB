@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<module name="rtc">
+  <classification>Runtime</classification>
+  <description>
+    <short>RTC utility</short>
+    <abstract><![CDATA[
+                        The rtc utility.
+                ]]></abstract>
+  </description>
+  <supports>
+    <availability>
+      <os name="nto">
+        <cpu isa="ppc">
+          <byteOrder>be</byteOrder>
+          <byteOrder>be.spe</byteOrder>
+        </cpu>
+        <cpu isa="sh">
+          <byteOrder>le</byteOrder>
+        </cpu>
+        <cpu isa="arm">
+          <byteOrder>le</byteOrder>
+          <byteOrder>le.v7</byteOrder>
+        </cpu>
+        <cpu isa="x86"/>
+        <cpu isa="mips">
+          <byteOrder>le</byteOrder>
+          <byteOrder>be</byteOrder>
+        </cpu>
+      </os>
+    </availability>
+  </supports>
+  <contents>
+    <component id="rtc" generated="true">
+      <location basedir="nto/ppc/be">rtc</location>
+      <location basedir="nto/ppc/be.spe">rtc</location>
+      <location basedir="nto/sh/le">rtc</location>
+      <location basedir="nto/arm/le">rtc</location>
+      <location basedir="nto/arm/le.v7">rtc</location>
+      <location basedir="nto/x86/o">rtc</location>
+      <location basedir="nto/mips/le">rtc</location>
+      <location basedir="nto/mips/be">rtc</location>
+    </component>
+  </contents>
+  <requires>
+    <part build="true" location="lib/util"/>
+    <part build="false" location="lib/i2c"/>
+  </requires>
+</module>

@@ -1,0 +1,3 @@
+define PINFO
+PINFO DESCRIPTION=DM816x SPI driver
+endef

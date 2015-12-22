@@ -1,0 +1,3 @@
+USEFILE=$(PROJECT_ROOT)/$(NAME).use
+
+override CCOPTS+= -DJ5_ECO -DAM335X

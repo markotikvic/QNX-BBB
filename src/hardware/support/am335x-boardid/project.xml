@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<module name="am335x-boardid">
+  <classification>Driver</classification>
+  <description>
+    <short>Am335x boardid driver</short>
+    <abstract><![CDATA[
+	                This interface is supported in the AM335x BSP.
+	        ]]></abstract>
+  </description>
+  <supports>
+    <availability>
+      <cpu isa="arm">
+        <byteOrder>le</byteOrder>
+      </cpu>
+    </availability>
+  </supports>
+  <contents>
+    <component id="am335x" generated="true">
+      <location basedir="arm/le">am335x-boardid</location>
+    </component>
+  </contents>
+</module>

@@ -1,0 +1,14 @@
+OMAP35xx I2C manager
+
+%C [options]
+
+Options:
+-a addr     Own address (default: 1)
+-p addr     I2C base address (default: 0x48070000)
+-P prio     priority of interrupt event pulse
+-i irq      I2C interrupt (default: 56)
+-s slave    Slave address (default: 0x49)
+-v          verbose
+-f          don't treat ROVR and XUDF as errors
+-h value    optional value to add to SCCH to adjust high clock period (value is in NS) (default=0)
+-l value    optional value to add to SCCL to adjust low clock period (value is in NS) (default=0)

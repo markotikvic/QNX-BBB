@@ -1,0 +1,10 @@
+%C Watchdog Timer Module for J5 DM814x processor
+
+Syntax:
+    dm814x-wdtkick [options] 
+Options:
+ -a addr        WDT register physical base address  
+ -l len        	 WDOG registers size
+ -p priority    Define priority of the Watchdog Timer Module event. (default: 10).
+ -t time        	Set kick time 
+ -e             Terminate the Watchdog Time Module

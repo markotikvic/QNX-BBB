@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<module name="deva-ctrl-dra44x_jamr">
+	<type>Element</type>
+	<classification>Driver</classification>
+
+	<description>
+	        <short>Audio Driver for the TI McASP audio interface</short>
+	        <abstract>
+			<![CDATA[The deva-ctrl-mcasp shared object is responsible for configuring and operating the Texas Instruments McASP audio interface under the direct control of the QNX Sound Architecture (io-audio).]]>
+	        </abstract>
+	</description>
+
+
+	<supports>
+		<availability>
+			<cpu isa="arm"><byteOrder>le</byteOrder></cpu>
+		</availability>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+	<GroupOwner>hw</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<component id="mcasp" generated="true">
+			<location basedir="{os}/{cpu}/dll{.:endian}"
+				 runtime="true">deva-ctrl-mcasp.so</location>
+		</component>
+	</contents>
+
+	<requires>
+		<part build="false" location="lib/asound"/>
+		<part rootMacro="AUDIO_ROOT" build="false" location="services/audio"/>
+	</requires>
+
+</module>

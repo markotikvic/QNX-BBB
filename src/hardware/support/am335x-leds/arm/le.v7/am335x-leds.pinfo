@@ -1,0 +1,8 @@
+STATE=Experimental
+INSTALLDIR=armle-v7/sbin/
+INSTALLNAME=am335x-leds
+NAME=am335x-leds
+USER=marko
+HOST=lmint
+DATE=2015/12/01-11:13:59-CET
+DESCRIPTION=AM335X BoardId Driver

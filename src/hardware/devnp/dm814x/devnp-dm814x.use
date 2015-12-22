@@ -1,0 +1,41 @@
+%C Driver for DM814x Ethernet controllers
+
+Syntax:
+  io-pkt-v4 -d dm814x [option[,option ...]] ...
+
+Options (to override autodetected defaults):
+  p0mode=rmii|gmii|rgmii  MII mode for port 0.
+  p1mode=rmii|gmii|rgmii  MII mode for port 1.
+  p0speed=10|100|1000     Media data rate for port 0 in Mb/s.
+  p1speed=10|100|1000     Media data rate for port 1 in Mb/s.
+  p0duplex=0|1            Half (0) or full (1) duplex mode for port 0.
+  p1duplex=0|1            Half (0) or full (1) duplex mode for port 0.
+  p0txflow                Force Tx flow control on port 0
+  p0rxflow                Force Rx flow control on port 0
+  p1txflow                Force Tx flow control on port 1
+  p1rxflow                Force Rx flow control on port 1
+  p0fix_mii_clk           Set the 50Mhz clock bit for Micrel RMII Phy
+                          on port 0.
+  p1fix_mii_clk           Set the 50Mhz clock bit for Micrel RMII Phy
+                          on port 1.
+  p0emu_phy               Emulate a phy on port 0.
+  p1emu_phy               Emulate a phy on port 1.
+  p0phy_idx=X             Starting MDIO address to scan for a PHY
+                          on port 0 (default: 0).
+  p1phy_idx=X             Starting MDIO address to scan for a PHY
+                          on port 1 (default: 0). Note that this must
+                          first find the port 0 PHY and then find the port 1
+                          PHY at a higher address.
+  p0mac=XXXXXXXXXXXX      MAC address to use on port 0.
+  p1mac=XXXXXXXXXXXX      MAC address to use on port 1.
+  p0mru=num               Maximum receive unit on port 0 (default: 1514).
+  p1mru=num               Maximum receive unit on port 1 (default: 1514).
+  verbose=num             Set verbosity level (default: 0).
+  p0joinvlan="1;2;3..."   List of VLANs to join on port 0.
+  p1joinvlan="4;5;6..."   List of VLANs to join on port 1.
+  deviceindex=x           Single port to use.
+
+Examples:
+  # Start v4 TCP/IP io-pkt using the driver:
+  io-pkt-v4 -d dm814x verbose=1,p0mac=001122334455,p1mac=001122334456
+  ifconfig dm0 10.10.10.1

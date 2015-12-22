@@ -1,0 +1,28 @@
+%C Driver for Mentor Graphics peripheral controller.
+
+Featuring descriptors for a CDC Serial(ACM) device.
+
+Syntax:
+    io-usb-dcd -d usbser-am335x-musbmhdrc [options]
+
+Options:
+    ioport=<addr>        register base address
+    irq=<num>            interrupt request number
+    verbose=<int>        set verbosity level to <int>
+    ser=<string>         override serial string descriptor
+    linkup               Assert "SOFT CONNECT".  Enables the target to be detected
+                         as soon as the device controller driver is loaded
+    linkdown             De-assert "SOFT-CONNECT".  The link must be manually
+                         enabled once the entire USB subsystem is ready. (default)
+    forcefs              Force controller to operate at full speed
+    nodma                force PIO mode
+    inherit_cfg          Do not power down PHY, gate USB clocks when driver exits
+    force_device_mode    Ignore "ID" pin and force USB Controller to operate in Device Mode.
+    edma                 Use EDMA other than the default CPPI DMA
+    edmachannel          The first EDMA channel available for this driver (default 0)
+    edmairq              The IRQ number corresponds to 'edmachannel'. (default 512)
+
+Examples:
+
+    io-usb-dcd  -dusbser-am335x-musbmhdrc ioport=0x47401400,irq=18,nodma,verbose=5
+    io-usb-dcd  -dusbser-am335x-musbmhdrc ioport=0x47401400,irq=18,edma

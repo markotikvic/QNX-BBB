@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<module name="devc-seromap">
+	<type>Element</type>
+	<classification>Driver</classification>
+
+	<description>
+	        <short>Serial driver for TI OMAP's and compatibles</short>
+	        <abstract>
+	                <![CDATA[The devc-seromap manager is a small serial device manager for QNX Neutrino.]]>
+	        </abstract>
+	</description>
+
+	<supports>
+		<availability>
+			<cpu isa="arm"><byteOrder>le</byteOrder></cpu>
+			<cpu isa="arm"><byteOrder>le.v7</byteOrder></cpu>
+		</availability>
+	</supports>
+
+	<source available="false">
+		<location type="">.</location>
+	</source>
+	<GroupOwner>hw</GroupOwner>
+	<RuntimeComponent>Neutrino RTOS</RuntimeComponent>
+
+
+	<contents>
+		<package isInternal="true">
+		<component id="seromap" generated="true">
+			<location basedir="{cpu}/{endian}"
+				 runtime="true">devc-seromap</location>
+		</component>
+		<component id="tseromap" generated="true">
+			<location basedir="{cpu}/{endian}"
+				 runtime="true">devc-tseromap</location>
+		</component>
+		</package>
+	</contents>
+
+	<requires>
+		<part rootMacro="LIBIOCHAR_ROOT" build="true" location="lib/io-char"/>
+		<part build="false" location="hardware/devc"/>
+	</requires>
+
+</module>
