@@ -69,11 +69,13 @@
    	#					- interrupt: interrupt number used by this device (Num_dec, 0xNum_hex)
    	
    	# UART0 (AM335x Sitara CortexM-8 Technical Reference Manual - Memory Mapping)
+   	display_msg Starting UART0: 115200/8/1/N...
     devc-seromap -e -F -b115200 -c48000000/16 0x44E09000^2,72
     waitfor /dev/ser1 4
     reopen /dev/ser1
+    display-msg UART0 up and running
    
-    # UART1 (AM335x Sitara CortexM-8 Technical Reference Manual - Memory Mapping)					# Robot
+    # UART1 (AM335x Sitara CortexM-8 Technical Reference Manual - Memory Mapping)					# Robot (call after boot)
     #devc-seromap -u2 -F -b115200 -c48000000/16 0x48022000^2,74
     #waitfor /dev/ser2 4
     #reopen /dev/ser2
@@ -158,12 +160,7 @@
     dhcp.client -i dm0
     
     ifconfig dm0 10.1.51.152 netmask 0xffff0000 broadcast 10.1.0.254								# Robot
-    
-    #######################################################################
-    ## qconn and devc-pty driver 																	# Robot
-    #######################################################################
-	qconn
-	devc-pty
+    display_msg Network configured: ip 10.1.51.152 netmask 255.255.0.0 bcast 10.1.0.254
 
     #######################################################################
     ## USB OTG port (operating in device mode)...
@@ -227,10 +224,10 @@
     ##    for more information on remote debugging
     ##  - the commands shown require that NETWORK is enabled too
     #######################################################################
-    #devc-pty
-    #waitfor /dev/ptyp0 4
-    #waitfor /dev/socket 4
-    #qconn port=8000
+    devc-pty
+    waitfor /dev/ptyp0 4
+    waitfor /dev/socket 4
+    qconn port=8000
 
     #######################################################################
     ## Leds driver

@@ -4,5 +4,5 @@ INSTALLNAME=startup-ti-am335x-beaglebone
 NAME=startup-ti-am335x-beaglebone
 USER=marko
 HOST=lmint
-DATE=2015/12/21-11:12:12-CET
+DATE=2015/12/23-11:51:42-CET
 DESCRIPTION=TI AM335x Cortex-A8 startup

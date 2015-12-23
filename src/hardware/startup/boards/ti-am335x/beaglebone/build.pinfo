@@ -4,5 +4,5 @@ INSTALLNAME=beaglebone.build
 NAME=build
 USER=marko
 HOST=lmint
-DATE=2015/12/21-11:12:12-CET
+DATE=2015/12/23-11:51:42-CET
 DESCRIPTION=Example build file for startup-ti-am335x-beaglebone
