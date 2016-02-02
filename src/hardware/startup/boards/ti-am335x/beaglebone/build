@@ -69,7 +69,7 @@
    	#					- interrupt: interrupt number used by this device (Num_dec, 0xNum_hex)
    	
    	# UART0 (AM335x Sitara CortexM-8 Technical Reference Manual - Memory Mapping)
-   	display_msg Starting UART0: 115200/8/1/N...
+   	display_msg Starting UART0 at /dev/ser1: 115200/8/1/N...
     devc-seromap -e -F -b115200 -c48000000/16 0x44E09000^2,72
     waitfor /dev/ser1 4
     reopen /dev/ser1
